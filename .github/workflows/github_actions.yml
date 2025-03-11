@@ -45,15 +45,16 @@ jobs:
         echo "/usr/local/bin" >> $GITHUB_PATH
         export PATH="/usr/local/bin:$PATH"
 
-    - name: Install Deepfence ThreatMapper 
+    - name: Install Veracode CLI 
       run: |
-        sudo apt-get update && sudo apt-get install -y golang
-        go install github.com/deepfence/ThreatMapper/cmd/threatmapper@latest
-        sudo mv ~/go/bin/threatmapper /usr/local/bin/
+        sudo apt-get update && sudo apt-get install -y curl unzip
+        curl -sSLO https://downloads.veracode.com/securityscan/veracode-cli-linux.zip
+        unzip veracode-cli-linux.zip
+        sudo mv veracode /usr/local/bin/
         echo "/usr/local/bin" >> $GITHUB_PATH
         export PATH="/usr/local/bin:$PATH"
-        threatmapper --version 
-  
+        veracode --version  
+
 
     - name: Install Gosec
       run: |
