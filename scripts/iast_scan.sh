@@ -7,8 +7,8 @@ zap-cli quick-scan --url http://localhost:8080
 sleep 10
 zap-cli report -o reports/zap-report.html -f html
 
-echo "Running Bearer IAST..."
-bearer scan --format=json --output=reports/bearer-iast.json
+echo "Running Gosec IAST..."
+gosec -fmt json -out reports/gosec-iast.json ./
 
 if [ $? -ne 0 ]; then
   echo "IAST scan failed."
