@@ -56,14 +56,14 @@ jobs:
   
     - name: Install Bearer
       run: |
-        sudo apt-get update && sudo apt-get install -y curl
+        sudo apt-get update && sudo apt-get install -y curl git
         curl -sfL https://raw.githubusercontent.com/Bearer/bearer/main/contrib/install.sh | sh
-        sudo mv ~/.bearer/bin/bearer /usr/local/bin/
+        sudo mv ./bin/bearer /usr/local/bin/
+        sudo chmod +x /usr/local/bin/bearer
         echo "/usr/local/bin" >> $GITHUB_PATH
         export PATH="/usr/local/bin:$PATH"
-        bearer version  
-    
-    
+        bearer version 
+     
     - name: Run SCA (Static Code Analysis)
       run: ./scripts/sca_scan.sh
   
