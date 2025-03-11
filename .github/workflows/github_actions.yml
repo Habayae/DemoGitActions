@@ -39,21 +39,11 @@ jobs:
     - name: Install Semgrep
       run: pip install --no-cache-dir --upgrade semgrep
         
-
     - name: Install Trivy
       run: |
         sudo apt-get update && sudo apt-get install -y wget jq
         wget -qO - https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo bash
-    
-    - name: Ensure required dependencies are installed
-      run: |
-        for pkg in wget jq unzip; do
-          if ! dpkg -s $pkg &> /dev/null; then
-            sudo apt-get update && sudo apt-get install -y $pkg
-          else
-            echo "$pkg is already installed."
-          fi
-        done
+
 
     - name: Install OWASP Dependency-Check
       run: |
