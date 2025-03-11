@@ -28,9 +28,10 @@ jobs:
     
     - name: Install OWASP ZAP
       run: |
-          wget -qO zap.tar.gz https://github.com/zaproxy/zaproxy/releases/latest/download/ZAP_2_11_1_Linux.tar.gz
+          wget -qO zap.tar.gz https://github.com/zaproxy/zaproxy/releases/latest/download/ZAP_2_14_0_Linux.tar.gz
+          if [ ! -s zap.tar.gz ]; then echo "Download failed!"; exit 1; fi
           mkdir -p /opt/zaproxy
-          tar -xvzf zap.tar.gz -C /opt/zaproxy --strip-components=1
+          tar -xvzf zap.tar.gz -C /opt/zaproxy --strip-components=1 || exit 1
           echo "/opt/zaproxy" >> $GITHUB_PATH
       
     - name: Install Semgrep
@@ -38,17 +39,18 @@ jobs:
 
     - name: Install Trivy
       run: |
-        sudo apt-get install -y wget
-        wget https://github.com/aquasecurity/trivy/releases/latest/download/trivy_0.46.0_Linux-64bit.tar.gz
-        tar zxvf trivy_0.46.0_Linux-64bit.tar.gz
+        sudo apt-get update && sudo apt-get install -y wget
+        wget -qO trivy.tar.gz https://github.com/aquasecurity/trivy/releases/latest/download/trivy_Linux-64bit.tar.gz
+        tar zxvf trivy.tar.gz
         sudo mv trivy /usr/local/bin/
 
     - name: Install OWASP Dependency-Check
       run: |
-        wget https://github.com/jeremylong/DependencyCheck/releases/download/v8.4.0/dependency-check-8.4.0-release.zip
-        unzip dependency-check-8.4.0-release.zip -d /opt/dependency-check
-        echo "/opt/dependency-check/bin" >> $GITHUB_PATH
-
+          wget -qO dependency-check.zip https://github.com/jeremylong/DependencyCheck/releases/latest/download/dependency-check.zip
+          if [ ! -s dependency-check.zip ]; then echo "Download failed!"; exit 1; fi
+          unzip -o dependency-check.zip -d /opt/dependency-check
+          echo "/opt/dependency-check/bin" >> $GITHUB_PATH
+      
     - name: Run SCA (Static Code Analysis) with OWASP Dependency-Check
       run: dependency-check --scan ./ --format HTML --out reports/dependency-check-report.html
 
