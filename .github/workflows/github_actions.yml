@@ -27,8 +27,12 @@ jobs:
         echo "/opt/sonar-scanner/sonar-scanner-4.7.0.2747-linux/bin" >> $GITHUB_PATH
     
     - name: Install OWASP ZAP
-      run: sudo apt-get update && sudo apt-get install -y zaproxy
-
+      run: |
+          wget -qO zap.tar.gz https://github.com/zaproxy/zaproxy/releases/latest/download/ZAP_2_11_1_Linux.tar.gz
+          mkdir -p /opt/zaproxy
+          tar -xvzf zap.tar.gz -C /opt/zaproxy --strip-components=1
+          echo "/opt/zaproxy" >> $GITHUB_PATH
+      
     - name: Install Semgrep
       run: pip install semgrep
 
