@@ -35,17 +35,23 @@ jobs:
           mkdir -p /opt/zaproxy
           tar -xvzf zap.tar.gz -C /opt/zaproxy --strip-components=1 || exit 1
           echo "/opt/zaproxy" >> $GITHUB_PATH
-      
-      
+       
     - name: Install Semgrep
       run: pip install semgrep
 
     - name: Install Trivy
       run: |
-        sudo apt-get update && sudo apt-get install -y wget
-        wget -qO trivy.tar.gz https://github.com/aquasecurity/trivy/releases/latest/download/trivy_Linux-64bit.tar.gz
-        tar zxvf trivy.tar.gz
-        sudo mv trivy /usr/local/bin/
+        if ! command -v trivy &> /dev/null; then
+          sudo apt-get update && sudo apt-get install -y wget
+          TRIVY_URL=$(curl -s https://api.github.com/repos/aquasecurity/trivy/releases/latest | jq -r '.assets[] | select(.name | contains("Linux-64bit.tar.gz")) | .browser_download_url')
+          wget -qO trivy.tar.gz "$TRIVY_URL"
+          if [ ! -s trivy.tar.gz ]; then echo "Download failed!"; exit 1; fi
+          tar zxvf trivy.tar.gz
+          sudo mv trivy /usr/local/bin/
+        else
+          echo "Trivy is already installed."
+        fi
+    
 
     - name: Install OWASP Dependency-Check
       run: |
