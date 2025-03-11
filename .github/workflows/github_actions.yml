@@ -47,13 +47,12 @@ jobs:
 
     - name: Install Nuclei
       run: |
-          sudo apt-get update && sudo apt-get install -y wget unzip
-          wget -qO nuclei.zip https://github.com/projectdiscovery/nuclei/releases/latest/download/nuclei-linux-amd64.zip
-          unzip nuclei.zip
-          sudo mv nuclei /usr/local/bin/
+          sudo apt-get update && sudo apt-get install -y wget unzip golang
+          go install -v github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest
+          sudo mv ~/go/bin/nuclei /usr/local/bin/
           echo "/usr/local/bin" >> $GITHUB_PATH
           export PATH="/usr/local/bin:$PATH"
-          nuclei -version  # Kiểm tra cài đặt thành công
+          nuclei -version  
   
     - name: Install AppScan 
       run: |
