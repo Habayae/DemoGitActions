@@ -76,7 +76,7 @@ jobs:
       run: ./scripts/dast_scan.sh
 
     - name: Run IAST (Interactive Application Security Testing)
-      run: ./scripts/iact_scan.sh
+      run: ./scripts/iast_scan.sh
 
     - name: Evaluate risk based on scan reports
       run: ./scripts/evaluate_risk.sh
