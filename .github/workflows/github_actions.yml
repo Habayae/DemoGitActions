@@ -1,0 +1,74 @@
+name: DevSecOps Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  devsecops-pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out the code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js (if applicable)
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+
+    - name: Install dependencies
+      run: |
+        npm install
+
+    - name: Run SCA (Static Code Analysis)
+      run: |
+        ./scripts/sca_scan.sh
+
+    - name: Run SAST (Static Application Security Testing)
+      run: |
+        ./scripts/sast_scan.sh
+
+    - name: Run DAST (Dynamic Application Security Testing)
+      run: |
+        ./scripts/dast_scan.sh
+
+    - name: Run IAST (Interactive Application Security Testing)
+      run: |
+        ./scripts/iact_scan.sh
+
+    - name: Evaluate risk based on scan reports
+      run: |
+        ./scripts/evaluate_risk.sh
+
+    - name: Prioritize vulnerabilities for remediation
+      run: |
+        ./scripts/prioritize_vulnerabilities.sh
+
+    - name: Improve and optimize code based on identified vulnerabilities
+      run: |
+        ./scripts/improve_code.sh
+
+    - name: Integrate security into DevSecOps pipeline
+      run: |
+        ./scripts/integrate_security_devsecops.sh
+
+    - name: Commit the updated code (if any fixes were made)
+      run: |
+        git config --global user.name "Vu Viet Anh"
+        git config --global user.email "vuvietanh201315@gmail.com"
+        git add .
+        git commit -m "Fix vulnerabilities based on security scans"
+        git push
+
+    - name: Monitor and update tools
+      run: |
+        ./scripts/monitor_update_tools.sh
+
+    - name: Repeat the process
+      run: |
+        echo "Re-running pipeline after changes"
