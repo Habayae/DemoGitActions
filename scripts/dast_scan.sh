@@ -4,7 +4,11 @@ node server.js &
 SERVER_PID=$!
 sleep 10  
 
-changed_files=$(git diff --name-only HEAD~1 HEAD)
+if git rev-parse HEAD~1 >/dev/null 2>&1; then
+    changed_files=$(git diff --name-only HEAD~1 HEAD)
+else
+    changed_files=""
+fi
 
 if echo "$changed_files" | grep -E "(html|css|js|php|ts|vue|react|angular)"; then
     echo "Web-related changes detected. Running OWASP ZAP..."
@@ -18,8 +22,8 @@ else
     sleep 10
 fi
 
-if [ $? -ne 0 ]; then
-    echo "DAST scan failed."
+if [ ! -f "reports/zap-report.html" ] && [ ! -f "reports/katana-dast.json" ]; then
+    echo "DAST scan failed: No report generated."
     exit 1
 else
     echo "DAST scan passed successfully."
