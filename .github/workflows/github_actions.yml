@@ -31,7 +31,6 @@ jobs:
         export PATH="/opt/zaproxy:$PATH"
         pip install --no-cache-dir zapcli
 
-
     - name: Install Semgrep
       run: |
         pip install --no-cache-dir --upgrade semgrep
@@ -44,6 +43,20 @@ jobs:
         wget -qO - https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo bash
         sudo mv ./bin/trivy /usr/local/bin/
         echo "/usr/local/bin" >> $GITHUB_PATH
+        export PATH="/usr/local/bin:$PATH"
+
+    - name: Install Nuclei (DAST for Application)
+      run: |
+        wget -qO nuclei.tar.gz https://github.com/projectdiscovery/nuclei/releases/latest/download/nuclei-linux-amd64.tar.gz
+        tar -xvzf nuclei.tar.gz
+        sudo mv nuclei /usr/local/bin/
+        echo "/usr/local/bin" >> $GITHUB_PATH
+        export PATH="/usr/local/bin:$PATH"
+
+    - name: Install AppScan (IAST for Application)
+      run: |
+        wget -qO - https://appscan.com/install.sh | bash
+        echo "/usr/local/bin/appscan" >> $GITHUB_PATH
         export PATH="/usr/local/bin:$PATH"
 
     - name: Run SCA (Static Code Analysis)
