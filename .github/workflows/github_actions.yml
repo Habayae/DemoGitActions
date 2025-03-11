@@ -41,16 +41,8 @@ jobs:
 
     - name: Install Trivy
       run: |
-        if ! command -v trivy &> /dev/null; then
-          sudo apt-get update && sudo apt-get install -y wget
-          TRIVY_URL=$(curl -s https://api.github.com/repos/aquasecurity/trivy/releases/latest | jq -r '.assets[] | select(.name | contains("Linux-64bit.tar.gz")) | .browser_download_url')
-          wget -qO trivy.tar.gz "$TRIVY_URL"
-          if [ ! -s trivy.tar.gz ]; then echo "Download failed!"; exit 1; fi
-          tar zxvf trivy.tar.gz
-          sudo mv trivy /usr/local/bin/
-        else
-          echo "Trivy is already installed."
-        fi
+        sudo apt-get update && sudo apt-get install -y wget jq
+        wget -qO - https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo bash
     
 
     - name: Install OWASP Dependency-Check
