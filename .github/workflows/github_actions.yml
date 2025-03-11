@@ -52,8 +52,12 @@ jobs:
         echo "/usr/local/bin" >> $GITHUB_PATH
         export PATH="/usr/local/bin:$PATH"
 
+    - name: Create reports
+      run: |
+        mkdir -p reports
+
     - name: Run SCA (Static Code Analysis) with Trivy
-      run: trivy fs --format table --output reports/sca-report.txt ./
+      run: ./scripts/sca_scan.sh
   
     - name: Run SAST (Static Application Security Testing)
       run: ./scripts/sast_scan.sh
