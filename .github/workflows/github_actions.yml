@@ -45,9 +45,9 @@ jobs:
         wget -qO - https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo bash
 
 
-    - name: Run SCA (Static Code Analysis) with OWASP Dependency-Check
-      run: dependency-check --scan ./ --format HTML --out reports/dependency-check-report.html
-
+    - name: Run SCA (Static Code Analysis) with Trivy
+      run: trivy fs --format table --output reports/sca-report.txt ./
+  
     - name: Run SAST (Static Application Security Testing)
       run: ./scripts/sast_scan.sh
 
