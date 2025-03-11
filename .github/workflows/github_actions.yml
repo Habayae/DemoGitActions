@@ -54,13 +54,15 @@ jobs:
           export PATH="/usr/local/bin:$PATH"
           nuclei -version  
   
-    - name: Install Bearer (IAST)
+    - name: Install Bearer
       run: |
-        curl -sfL https://raw.githubusercontent.com/Bearer/bearer/main/install.sh | sh
+        sudo apt-get update && sudo apt-get install -y curl
+        curl -sfL https://raw.githubusercontent.com/Bearer/bearer/main/contrib/install.sh | sh
         sudo mv ~/.bearer/bin/bearer /usr/local/bin/
         echo "/usr/local/bin" >> $GITHUB_PATH
         export PATH="/usr/local/bin:$PATH"
-          bearer version 
+        bearer version  
+    
     
     - name: Run SCA (Static Code Analysis)
       run: ./scripts/sca_scan.sh
