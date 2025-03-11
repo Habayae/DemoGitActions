@@ -4,7 +4,7 @@ const md5 = require("md5");
 const app = express();
 app.use(express.urlencoded({ extended: false }));
 
-app.listen(3000, () => console.log("Server running on http://localhost:3000"));
+app.listen(3000, () => console.log("Server running on http://localhost:8080"));
 
 app.post("/login", (req, res) => {
     let username = req.body.username;

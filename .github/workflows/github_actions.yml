@@ -72,6 +72,11 @@ jobs:
     - name: Run SAST (Static Application Security Testing)
       run: ./scripts/sast_scan.sh
 
+    - name: Start test server
+      run: |
+        node server.js &
+        sleep 10 
+
     - name: Run DAST (Dynamic Application Security Testing)
       run: ./scripts/dast_scan.sh
 
