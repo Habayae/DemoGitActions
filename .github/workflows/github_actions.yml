@@ -45,15 +45,17 @@ jobs:
         echo "/usr/local/bin" >> $GITHUB_PATH
         export PATH="/usr/local/bin:$PATH"
 
-    - name: Install Nuclei (DAST for Application)
+    - name: Install Nuclei
       run: |
-        wget -qO nuclei.tar.gz https://github.com/projectdiscovery/nuclei/releases/latest/download/nuclei-linux-amd64.tar.gz
-        tar -xvzf nuclei.tar.gz
-        sudo mv nuclei /usr/local/bin/
-        echo "/usr/local/bin" >> $GITHUB_PATH
-        export PATH="/usr/local/bin:$PATH"
-
-    - name: Install AppScan (IAST for Application)
+          sudo apt-get update && sudo apt-get install -y wget unzip
+          wget -qO nuclei.zip https://github.com/projectdiscovery/nuclei/releases/latest/download/nuclei-linux-amd64.zip
+          unzip nuclei.zip
+          sudo mv nuclei /usr/local/bin/
+          echo "/usr/local/bin" >> $GITHUB_PATH
+          export PATH="/usr/local/bin:$PATH"
+          nuclei -version  # Kiểm tra cài đặt thành công
+  
+    - name: Install AppScan 
       run: |
         wget -qO - https://appscan.com/install.sh | bash
         echo "/usr/local/bin/appscan" >> $GITHUB_PATH
