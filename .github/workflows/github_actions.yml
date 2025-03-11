@@ -45,14 +45,15 @@ jobs:
         echo "/usr/local/bin" >> $GITHUB_PATH
         export PATH="/usr/local/bin:$PATH"
 
-    - name: Install Gospel (DAST for Application)
+    - name: Install Gauntlt 
       run: |
         sudo apt-get update && sudo apt-get install -y golang
-        go install github.com/GospelSecurity/gospel/cmd/gospel@latest
-        sudo mv ~/go/bin/gospel /usr/local/bin/
+        go install github.com/gauntlt/gauntlt@latest
+        sudo mv ~/go/bin/gauntlt /usr/local/bin/
         echo "/usr/local/bin" >> $GITHUB_PATH
         export PATH="/usr/local/bin:$PATH"
-        gospel -version      
+        gauntlt --version  
+  
   
     - name: Install Gosec
       run: |

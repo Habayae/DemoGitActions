@@ -9,8 +9,8 @@ if echo "$changed_files" | grep -E "(html|css|js|php|ts|vue|react|angular)"; the
     zap-cli quick-scan --url http://localhost:8080
     zap-cli report -o reports/zap-report.html -f html
 else
-    echo "Non-web changes detected. Running Gospel..."
-    gospel scan --output reports/gospel-dast.json
+    echo "Non-web changes detected. Running Gauntlt..."
+    gauntlt --output reports/gauntlt-dast.json
 fi
 
 if [ $? -ne 0 ]; then
