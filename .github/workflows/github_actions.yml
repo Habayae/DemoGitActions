@@ -19,9 +19,9 @@ jobs:
     - name: Set execute permissions for scripts
       run: chmod +x scripts/*.sh 
 
-    - name: Install OWASP ZAP
+    - name: Install OWASP ZAP and zap-cli
       run: |
-        sudo apt-get update && sudo apt-get install -y wget jq
+        sudo apt-get update && sudo apt-get install -y wget jq python3-pip
         ZAP_URL=$(curl -s https://api.github.com/repos/zaproxy/zaproxy/releases/latest | jq -r '.assets[] | select(.name | endswith("Linux.tar.gz")) | .browser_download_url')
         wget -qO zap.tar.gz "$ZAP_URL"
         if [ ! -s zap.tar.gz ]; then echo "Download failed!"; exit 1; fi
@@ -29,6 +29,8 @@ jobs:
         tar -xvzf zap.tar.gz -C /opt/zaproxy --strip-components=1 || exit 1
         echo "/opt/zaproxy" >> $GITHUB_PATH
         export PATH="/opt/zaproxy:$PATH"
+        pip install --no-cache-dir zapcli
+
 
     - name: Install Semgrep
       run: |

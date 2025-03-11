@@ -1,5 +1,9 @@
 #!/bin/bash
 
+echo "Starting OWASP ZAP daemon..."
+zap.sh -daemon -port 8080 -config api.disablekey=true
+sleep 10 
+
 echo "Running DAST scan..."
 zap-cli quick-scan --url http://localhost:8080
 
