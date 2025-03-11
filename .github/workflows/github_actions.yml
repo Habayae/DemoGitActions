@@ -68,20 +68,15 @@ jobs:
 
     - name: Run SCA (Static Code Analysis)
       run: ./scripts/sca_scan.sh
-  
+
     - name: Run SAST (Static Application Security Testing)
       run: ./scripts/sast_scan.sh
 
-    - name: Start test server
-      run: |
-        node server.js &
-        sleep 10 
-
     - name: Run DAST (Dynamic Application Security Testing)
-      run: ./scripts/dast_scan.sh
+      run: ./scripts/dast_scan.sh  
 
     - name: Run IAST (Interactive Application Security Testing)
-      run: ./scripts/iast_scan.sh
+      run: ./scripts/iast_scan.sh  
 
     - name: Evaluate risk based on scan reports
       run: ./scripts/evaluate_risk.sh
