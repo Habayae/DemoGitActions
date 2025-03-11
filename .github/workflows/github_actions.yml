@@ -21,29 +21,36 @@ jobs:
 
     - name: Install SonarQube Scanner
       run: |
-        sudo apt-get update && sudo apt-get install -y unzip
-        wget -qO sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.7.0.2747-linux.zip
-        unzip sonar-scanner.zip -d /opt/sonar-scanner
-        echo "/opt/sonar-scanner/sonar-scanner-4.7.0.2747-linux/bin" >> $GITHUB_PATH
-    
+          sudo apt-get update && sudo apt-get install -y unzip
+          wget -qO sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.7.0.2747-linux.zip
+          unzip sonar-scanner.zip -d /opt/sonar-scanner
+          echo "/opt/sonar-scanner/sonar-scanner-4.7.0.2747-linux/bin" >> $GITHUB_PATH
+          export PATH="/opt/sonar-scanner/sonar-scanner-4.7.0.2747-linux/bin:$PATH"
+
     - name: Install OWASP ZAP
       run: |
-          sudo apt-get update && sudo apt-get install -y wget jq
-          ZAP_URL=$(curl -s https://api.github.com/repos/zaproxy/zaproxy/releases/latest | jq -r '.assets[] | select(.name | endswith("Linux.tar.gz")) | .browser_download_url')
-          wget -qO zap.tar.gz "$ZAP_URL"
-          if [ ! -s zap.tar.gz ]; then echo "Download failed!"; exit 1; fi
-          mkdir -p /opt/zaproxy
-          tar -xvzf zap.tar.gz -C /opt/zaproxy --strip-components=1 || exit 1
-          echo "/opt/zaproxy" >> $GITHUB_PATH
-       
+        sudo apt-get update && sudo apt-get install -y wget jq
+        ZAP_URL=$(curl -s https://api.github.com/repos/zaproxy/zaproxy/releases/latest | jq -r '.assets[] | select(.name | endswith("Linux.tar.gz")) | .browser_download_url')
+        wget -qO zap.tar.gz "$ZAP_URL"
+        if [ ! -s zap.tar.gz ]; then echo "Download failed!"; exit 1; fi
+        mkdir -p /opt/zaproxy
+        tar -xvzf zap.tar.gz -C /opt/zaproxy --strip-components=1 || exit 1
+        echo "/opt/zaproxy" >> $GITHUB_PATH
+        export PATH="/opt/zaproxy:$PATH"
+
     - name: Install Semgrep
-      run: pip install --no-cache-dir --upgrade semgrep
-        
+      run: |
+        pip install --no-cache-dir --upgrade semgrep
+        echo "$(which semgrep)" >> $GITHUB_PATH
+        export PATH="$(dirname $(which semgrep)):$PATH"
+
     - name: Install Trivy
       run: |
         sudo apt-get update && sudo apt-get install -y wget jq
         wget -qO - https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo bash
-
+        sudo mv ./bin/trivy /usr/local/bin/
+        echo "/usr/local/bin" >> $GITHUB_PATH
+        export PATH="/usr/local/bin:$PATH"
 
     - name: Run SCA (Static Code Analysis) with Trivy
       run: trivy fs --format table --output reports/sca-report.txt ./
