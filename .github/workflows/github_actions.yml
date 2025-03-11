@@ -37,7 +37,8 @@ jobs:
           echo "/opt/zaproxy" >> $GITHUB_PATH
        
     - name: Install Semgrep
-      run: pip install semgrep
+      run: pip install --no-cache-dir --upgrade semgrep
+        
 
     - name: Install Trivy
       run: |
