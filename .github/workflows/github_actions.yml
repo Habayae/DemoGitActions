@@ -49,11 +49,11 @@ jobs:
     - name: Install OWASP Dependency-Check
       run: |
           sudo apt-get update && sudo apt-get install -y wget jq unzip
-          DEP_CHECK_URL=$(curl -s https://api.github.com/repos/dependency-check/DependencyCheck/releases/latest | jq -r '.assets[] | select(.name | endswith(".zip")) | .browser_download_url')
+          DEP_CHECK_URL=$(curl -s https://api.github.com/repos/dependency-check/DependencyCheck/releases/latest | jq -r '.assets[] | select(.name | test("dependency-check-.*release.zip$")) | .browser_download_url')
           wget -qO dependency-check.zip "$DEP_CHECK_URL"
-          if [ ! -s dependency-check.zip ]; then echo "Download failed!"; exit 1; fi
           unzip -o dependency-check.zip -d /opt/dependency-check
           echo "/opt/dependency-check/bin" >> $GITHUB_PATH
+      
       
       
     - name: Run SCA (Static Code Analysis) with OWASP Dependency-Check
