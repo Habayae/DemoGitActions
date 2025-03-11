@@ -2,10 +2,10 @@
 
 echo "Improving and optimizing code based on identified vulnerabilities..."
 
-sca_report="./dependency-check-report/*.html"
-sast_report="./sonar-report/sonar-report.json"
-dast_report="./zap-report.html"
-iast_report="./iast-report.json" 
+sca_report="./reports/dependency-check-report.html"
+sast_report="./reports/sonar-report.json"
+dast_report="./reports/zap-report.html"
+iast_report="./reports/zap_report.html"
 
 if [ ! -f "$sca_report" ]; then
   echo "SCA report not found!"

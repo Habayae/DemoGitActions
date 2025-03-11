@@ -19,14 +19,6 @@ jobs:
     - name: Set execute permissions for scripts
       run: chmod +x scripts/*.sh 
 
-    - name: Install Snyk
-      run: npm install -g snyk
-
-    - name: Authenticate Snyk using API Token
-      env:
-        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      run: snyk auth $SNYK_TOKEN
-
     - name: Install SonarQube Scanner
       run: |
         wget -qO - https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.7.0.2747-linux.zip | bsdtar -xf - -C /opt
@@ -45,8 +37,14 @@ jobs:
         tar zxvf trivy_0.46.0_Linux-64bit.tar.gz
         sudo mv trivy /usr/local/bin/
 
-    - name: Run SCA (Static Code Analysis)
-      run: ./scripts/sca_scan.sh
+    - name: Install OWASP Dependency-Check
+      run: |
+        wget https://github.com/jeremylong/DependencyCheck/releases/download/v8.4.0/dependency-check-8.4.0-release.zip
+        unzip dependency-check-8.4.0-release.zip -d /opt/dependency-check
+        echo "/opt/dependency-check/bin" >> $GITHUB_PATH
+
+    - name: Run SCA (Static Code Analysis) with OWASP Dependency-Check
+      run: dependency-check --scan ./ --format HTML --out reports/dependency-check-report.html
 
     - name: Run SAST (Static Application Security Testing)
       run: ./scripts/sast_scan.sh

@@ -1,11 +1,11 @@
 #!/bin/bash
 
 echo "Running SCA scan for dependencies..."
-
-snyk test --all-projects
+mkdir -p reports
+dependency-check --scan ./ --format HTML --out reports/dependency-check-report.html --project "MyProject"
 
 if [ $? -ne 0 ]; then
-  echo "SCA scan failed, vulnerabilities detected."
+  echo "SCA scan failed."
   exit 1
 else
   echo "SCA scan passed successfully."
