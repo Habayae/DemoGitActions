@@ -45,16 +45,16 @@ jobs:
         echo "/usr/local/bin" >> $GITHUB_PATH
         export PATH="/usr/local/bin:$PATH"
 
-    - name: Install Nuclei
+    - name: Install Gospel (DAST for Application)
       run: |
-          sudo apt-get update && sudo apt-get install -y wget unzip golang
-          go install -v github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest
-          sudo mv ~/go/bin/nuclei /usr/local/bin/
-          echo "/usr/local/bin" >> $GITHUB_PATH
-          export PATH="/usr/local/bin:$PATH"
-          nuclei -version  
+        sudo apt-get update && sudo apt-get install -y golang
+        go install github.com/GospelSecurity/gospel/cmd/gospel@latest
+        sudo mv ~/go/bin/gospel /usr/local/bin/
+        echo "/usr/local/bin" >> $GITHUB_PATH
+        export PATH="/usr/local/bin:$PATH"
+        gospel -version      
   
-    - name: Install Gosec (IAST)
+    - name: Install Gosec
       run: |
         sudo apt-get update && sudo apt-get install -y golang
         go install github.com/securego/gosec/v2/cmd/gosec@latest
@@ -63,10 +63,7 @@ jobs:
         export PATH="/usr/local/bin:$PATH"
         gosec -version  
     
-      
-    
-    
-     
+
     - name: Run SCA (Static Code Analysis)
       run: ./scripts/sca_scan.sh
   
