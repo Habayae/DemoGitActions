@@ -2,7 +2,7 @@
 
 echo "Running SCA scan for dependencies..."
 mkdir -p reports
-dependency-check --scan ./ --format HTML --out reports/dependency-check-report.html --project "MyProject"
+trivy fs --format table --output reports/sca-report.txt ./
 
 if [ $? -ne 0 ]; then
   echo "SCA scan failed."

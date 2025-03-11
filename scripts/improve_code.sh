@@ -2,7 +2,7 @@
 
 echo "Improving and optimizing code based on identified vulnerabilities..."
 
-sca_report="./reports/dependency-check-report.html"
+sca_report="./reports/sca-report.txt"
 sast_report="./reports/sonar-report.json"
 dast_report="./reports/zap-report.html"
 iast_report="./reports/zap_report.html"
@@ -29,17 +29,16 @@ fi
 
 echo "Identifying vulnerabilities for code improvement..."
 
-echo "Fixing vulnerabilities based on SCA report..." 
+echo "Fixing vulnerabilities based on SCA report..."
 
-sca_critical=$(grep -o "Critical" "$sca_report" | wc -l)
-sca_high=$(grep -o "High" "$sca_report" | wc -l)
-sca_medium=$(grep -o "Medium" "$sca_report" | wc -l)
+critical_vulns=$(grep -o "CRITICAL" "$sca_report" | wc -l)
+high_vulns=$(grep -o "HIGH" "$sca_report" | wc -l)
 
-if [ $sca_critical -gt 0 ]; then
+if [ $critical_vulns -gt 0 ]; then
   echo "Fixing critical vulnerabilities found in SCA..."
 fi
 
-if [ $sca_high -gt 0 ]; then
+if [ $high_vulns -gt 0 ]; then
   echo "Fixing high vulnerabilities found in SCA..."
 fi
 

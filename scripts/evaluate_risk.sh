@@ -2,10 +2,10 @@
 
 echo "Evaluating risk based on scan reports..."
 
-sca_report="./reports/dependency-check-report.html"
-sast_report="./reports/sonar-report.json"
+sca_report="./reports/sca-report.txt"
+sast_report="./reports/sast-report.json"
 dast_report="./reports/zap-report.html"
-iast_report="./reports/iast-report.json"
+iast_report="./reports/iact-report.html"
 
 if [ ! -f "$sca_report" ]; then
   echo "SCA report not found!"
