@@ -10,6 +10,9 @@ else
     changed_files=""
 fi
 
+mkdir -p reports/
+touch reports/zap-report.html reports/katana-dast.json
+
 if echo "$changed_files" | grep -E "(html|css|js|php|ts|vue|react|angular)"; then
     echo "Web-related changes detected. Running OWASP ZAP..."
     zap.sh -daemon -port 8080 -config api.disablekey=true &
@@ -22,7 +25,7 @@ else
     sleep 10
 fi
 
-if [ ! -f "reports/zap-report.html" ] && [ ! -f "reports/katana-dast.json" ]; then
+if [ ! -s "reports/zap-report.html" ] && [ ! -s "reports/katana-dast.json" ]; then
     echo "DAST scan failed: No report generated."
     exit 1
 else

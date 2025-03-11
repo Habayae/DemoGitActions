@@ -5,9 +5,10 @@ echo "Evaluating risk based on scan reports..."
 sca_report="./reports/sca-report.txt"
 sast_report="./reports/sast-report.json"
 dast_report="./reports/zap-report.html"
+dast_katana="./reports/katana-dast.json"
 iast_report="./reports/iact-report.html"
 
-if [ ! -f "$sca_report" ]; then
+if [ ! -f "$sca_report" ] ; then
   echo "SCA report not found!"
   exit 1
 fi
@@ -17,7 +18,7 @@ if [ ! -f "$sast_report" ]; then
   exit 1
 fi
 
-if [ ! -f "$dast_report" ]; then
+if [ ! -f "$dast_report" ] && [ ! -s "$dast_katana" ]; then
   echo "DAST report not found!"
   exit 1
 fi
