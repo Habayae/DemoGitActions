@@ -27,6 +27,11 @@ jobs:
           echo "/opt/sonar-scanner/sonar-scanner-4.7.0.2747-linux/bin" >> $GITHUB_PATH
           export PATH="/opt/sonar-scanner/sonar-scanner-4.7.0.2747-linux/bin:$PATH"
 
+    - name: Start SonarQube
+      run: |
+        docker run -d --name sonar -p 9000:9000 sonarqube:lts
+        sleep 30  # Chờ SonarQube khởi động
+
     - name: Install OWASP ZAP
       run: |
         sudo apt-get update && sudo apt-get install -y wget jq
@@ -51,10 +56,6 @@ jobs:
         sudo mv ./bin/trivy /usr/local/bin/
         echo "/usr/local/bin" >> $GITHUB_PATH
         export PATH="/usr/local/bin:$PATH"
-
-    - name: Create reports
-      run: |
-        mkdir -p reports
 
     - name: Run SCA (Static Code Analysis) with Trivy
       run: ./scripts/sca_scan.sh
