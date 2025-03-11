@@ -47,12 +47,15 @@ jobs:
 
     - name: Install Gauntlt 
       run: |
-        sudo apt-get update && sudo apt-get install -y golang
-        go install github.com/gauntlt/gauntlt@latest
-        sudo mv ~/go/bin/gauntlt /usr/local/bin/
-        echo "/usr/local/bin" >> $GITHUB_PATH
-        export PATH="/usr/local/bin:$PATH"
-        gauntlt --version  
+        sudo apt-get update && sudo apt-get install -y ruby bundler git
+        git clone https://github.com/gauntlt/gauntlt.git
+        cd gauntlt
+        source ./install_gauntlt_deps.sh
+        bash ./ready_to_rumble.sh
+        echo "$(gem env home)/bin" >> $GITHUB_PATH
+        export PATH="$(gem env home)/bin:$PATH"
+        gauntlt --version 
+  
   
   
     - name: Install Gosec
