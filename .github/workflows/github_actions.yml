@@ -19,6 +19,14 @@ jobs:
     - name: Set execute permissions for scripts
       run: chmod +x scripts/*.sh 
 
+    - name: Install Node.js and dependencies
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+
+    - name: Install project dependencies
+      run: npm install
+
     - name: Install OWASP ZAP and zap-cli
       run: |
         sudo apt-get update && sudo apt-get install -y wget jq python3-pip
@@ -54,8 +62,6 @@ jobs:
         export PATH="/usr/local/bin:$PATH"
         katana -version 
   
-
-
     - name: Install Gosec
       run: |
         sudo apt-get update && sudo apt-get install -y golang
@@ -65,7 +71,6 @@ jobs:
         export PATH="/usr/local/bin:$PATH"
         gosec -version  
     
-
     - name: Run SCA (Static Code Analysis)
       run: ./scripts/sca_scan.sh
 
