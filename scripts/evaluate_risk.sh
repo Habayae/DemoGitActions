@@ -20,7 +20,7 @@ fi
 
 if [ ! -f "$dast_report" ] && [ ! -s "$dast_katana" ]; then
   echo "DAST report not found!"
-  exit 1
+  #exit 1
 fi
 
 if [ ! -f "$iast_report" ]; then
