@@ -1,11 +1,10 @@
 #!/bin/bash
 
-node server.js &  
+node server.js &
 SERVER_PID=$!
 sleep 10  
 
-changed_files=$(git diff --name-only HEAD)
-
+changed_files=$(git diff --name-only HEAD~1 HEAD)
 echo "Changed files: $changed_files"
 
 web_languages="\.html$|\.css$|\.js$|\.php$|\.ts$|\.vue$|\.react$|\.angular$"
@@ -34,7 +33,7 @@ fi
 
 if [ ! -s "reports/zap-report.html" ] && [ ! -s "reports/katana-dast.json" ]; then
     echo "DAST scan failed: No report generated."
-    # exit 1  
+    exit 1  
 else
     echo "DAST scan passed successfully."
 fi
