@@ -95,7 +95,7 @@ jobs:
     - name: Integrate security into DevSecOps pipeline
       run: ./scripts/integrate_security_devsecops.sh
 
-    - name: Commit the updated code (if any fixes were made)
+    - name: Commit the updated code 
       run: |
         git config --global user.name "Vu Viet Anh"
         git config --global user.email "vuvietanh201315@gmail.com"
