@@ -71,7 +71,7 @@ jobs:
         export PATH="/usr/local/bin:$PATH"
         gosec -version  
     
-    - name: Run SCA (Static Code Analysis)
+    - name: Run SCA (Software Component Analysis)
       run: ./scripts/sca_scan.sh
 
     - name: Run SAST (Static Application Security Testing)
