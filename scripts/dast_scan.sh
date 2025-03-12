@@ -4,7 +4,12 @@ node server.js &
 SERVER_PID=$!
 sleep 10  
 
-changed_files=$(git diff --name-only HEAD~1 HEAD)
+if git rev-parse --verify HEAD~1 > /dev/null 2>&1; then
+    changed_files=$(git diff --name-only HEAD~1 HEAD)
+else
+    changed_files=$(git ls-files)
+fi
+
 echo "Changed files: $changed_files"
 
 web_languages="\.html$|\.css$|\.js$|\.php$|\.ts$|\.vue$|\.react$|\.angular$"
