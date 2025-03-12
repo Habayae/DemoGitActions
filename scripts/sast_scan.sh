@@ -1,5 +1,8 @@
 #!/bin/bash
 
+mkdir -p reports/
+touch reports/sast-report.json
+
 echo "Running SAST scan..."
 semgrep scan --config=auto --output reports/sast-report.json
 

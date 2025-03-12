@@ -6,9 +6,12 @@ node server.js &
 SERVER_PID=$!
 sleep 10  
 
+mkdir -p reports/
+touch reports/zap-report.html reports/gosec-iast.json
+
 echo "Running IAST scan..."
 
-zap.sh -daemon -port 8080 -config api.disablekey=true &  
+zap.sh -daemon -port 8080 -config api.disablekey=true &
 sleep 10
 
 zap-cli quick-scan --url http://localhost:3000
