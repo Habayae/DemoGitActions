@@ -13,7 +13,7 @@ fi
 mkdir -p reports/
 touch reports/zap-report.html reports/katana-dast.json
 
-if echo "$changed_files" | grep -E "(html|css|js|php|ts|vue|react|angular)"; then
+if echo "$changed_files" | grep -E "(.html|.css|.js|.php|.ts|.vue|.react|.angular)"; then
     echo "Web-related changes detected. Running OWASP ZAP..."
     zap.sh -daemon -port 8080 -config api.disablekey=true &
     sleep 10
