@@ -4,7 +4,7 @@ node server.js &
 SERVER_PID=$!
 sleep 10  
 
-changed_files=$(git diff --name-only HEAD~1 HEAD)
+changed_files=$(git diff --name-only HEAD)
 
 echo "Changed files: $changed_files"
 
@@ -15,13 +15,13 @@ mkdir -p reports/
 touch reports/zap-report.html reports/katana-dast.json
 
 if echo "$changed_files" | grep -E "$web_languages"; then
-    echo "Web-related changes detected or no changes. Running OWASP ZAP..."
+    echo "Web-related changes detected. Running OWASP ZAP..."
     zap.sh -daemon -port 8080 -config api.disablekey=true &  
     sleep 10  
     zap-cli quick-scan --url http://localhost:3000  
     zap-cli report -o reports/zap-report.html -f html  
 elif echo "$changed_files" | grep -E "$software_languages"; then
-    echo "Software-related changes detected or no changes. Running Katana..."
+    echo "Software-related changes detected. Running Katana..."
     katana -u http://localhost:3000 -o reports/katana-dast.json &  
     sleep 10  
 else
