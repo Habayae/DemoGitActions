@@ -1,6 +1,6 @@
 #!/bin/bash
 
-node server.js &
+node server.js &  
 SERVER_PID=$!
 sleep 10  
 
@@ -10,24 +10,29 @@ else
     changed_files=""
 fi
 
+web_languages="\.html$|\.css$|\.js$|\.php$|\.ts$|\.vue$|\.react$|\.angular$"
+software_languages="\.java$|\.py$|\.go$|\.c$|\.cpp$|\.rb$|\.sh$"
+
 mkdir -p reports/
 touch reports/zap-report.html reports/katana-dast.json
 
-if echo "$changed_files" | grep -E "(.html|.css|.js|.php|.ts|.vue|.react|.angular)"; then
+if echo "$changed_files" | grep -E "$web_languages"; then
     echo "Web-related changes detected. Running OWASP ZAP..."
-    zap.sh -daemon -port 8080 -config api.disablekey=true &
-    sleep 10
-    zap-cli quick-scan --url http://localhost:3000
-    zap-cli report -o reports/zap-report.html -f html
+    zap.sh -daemon -port 8080 -config api.disablekey=true &  
+    sleep 10  
+    zap-cli quick-scan --url http://localhost:3000  
+    zap-cli report -o reports/zap-report.html -f html  
+elif echo "$changed_files" | grep -E "$software_languages"; then
+    echo "Software-related changes detected. Running Katana..."
+    katana -u http://localhost:3000 -o reports/katana-dast.json &  
+    sleep 10  
 else
-    echo "Non-web changes detected. Running Katana..."
-    katana -u http://localhost:3000 -o reports/katana-dast.json &
-    sleep 10
+    echo "No relevant changes detected for DAST scanning."
 fi
 
 if [ ! -s "reports/zap-report.html" ] && [ ! -s "reports/katana-dast.json" ]; then
     echo "DAST scan failed: No report generated."
-    #exit 1
+    # exit 1  
 else
     echo "DAST scan passed successfully."
 fi
