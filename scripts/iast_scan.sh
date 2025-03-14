@@ -17,12 +17,10 @@ if [ ! -z "$EXISTING_PID" ]; then
     echo "Port $PORT is in use. Killing process $EXISTING_PID..."
     kill -15 $EXISTING_PID
     sleep 2
-    
     if ps -p $EXISTING_PID > /dev/null; then
         echo "Process $EXISTING_PID still running. Forcing termination..."
         kill -9 $EXISTING_PID
     fi
-    
     sleep 2
 fi
 
@@ -35,8 +33,6 @@ if ! ps -p $SERVER_PID > /dev/null; then
     echo "Server failed to start. Exiting..."
     exit 1
 fi
-
-echo "Server started successfully with PID $SERVER_PID"
 
 echo "Checking if server is responding..."
 if ! curl -s http://localhost:$PORT > /dev/null; then
