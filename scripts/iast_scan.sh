@@ -1,26 +1,40 @@
 #!/bin/bash
 
+npm install
+
+if ! npm list express-session >/dev/null 2>&1; then
+    echo "Installing missing dependency: express-session..."
+    npm install express-session
+fi
+
 killall -q zap.sh
 
 node server.js &
 SERVER_PID=$!
 sleep 10  
 
+if ! ps -p $SERVER_PID > /dev/null; then
+    echo "Server failed to start. Exiting..."
+    exit 1
+fi
+
+echo "Server started successfully with PID $SERVER_PID"
+
 mkdir -p reports/
 touch reports/zap-report.html reports/gosec-iast.json
 
+if ! pgrep -f "zap.sh -daemon"; then
+    echo "Starting ZAP DAST..."
+    zap.sh -daemon -port 8080 -config api.disablekey=true &
+    sleep 10
+fi
+
 echo "Running IAST scan..."
-
-zap.sh -daemon -port 8080 -config api.disablekey=true &
+zap-cli quick-scan http://localhost:3000
 sleep 10
-
-zap-cli quick-scan --url http://localhost:3000
-sleep 10
-
 zap-cli report -o reports/zap-report.html -f html
 
 echo "Running Gosec IAST..."
-
 gosec -fmt json -out reports/gosec-iast.json ./
 
 if [ ! -s "reports/zap-report.html" ]; then
