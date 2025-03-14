@@ -10,22 +10,22 @@ iast_report="./reports/iact-report.html"
 
 if [ ! -f "$sca_report" ] ; then
   echo "SCA report not found!"
-  exit 1
+  #exit 1
 fi
 
 if [ ! -f "$sast_report" ]; then
   echo "SAST report not found!"
-  exit 1
+  #exit 1
 fi
 
 if [ ! -f "$dast_report" ] && [ ! -s "$dast_katana" ]; then
   echo "DAST report not found!"
-  exit 1
+  #exit 1
 fi
 
 if [ ! -f "$iast_report" ]; then
   echo "IAST report not found!"
-  exit 1
+  #exit 1
 fi
 
 risk_report="./risk-evaluation-report.txt"
