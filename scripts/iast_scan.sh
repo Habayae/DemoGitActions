@@ -1,6 +1,9 @@
 #!/bin/bash
 
-npm install
+set -e  
+
+echo "Installing dependencies..."
+npm install || { echo "npm install failed. Exiting..."; exit 1; }
 
 if ! npm list express-session >/dev/null 2>&1; then
     echo "Installing missing dependency: express-session..."
@@ -12,7 +15,14 @@ EXISTING_PID=$(lsof -ti :$PORT)
 
 if [ ! -z "$EXISTING_PID" ]; then
     echo "Port $PORT is in use. Killing process $EXISTING_PID..."
-    kill -9 $EXISTING_PID
+    kill -15 $EXISTING_PID
+    sleep 2
+    
+    if ps -p $EXISTING_PID > /dev/null; then
+        echo "Process $EXISTING_PID still running. Forcing termination..."
+        kill -9 $EXISTING_PID
+    fi
+    
     sleep 2
 fi
 
@@ -39,7 +49,7 @@ touch reports/zap-report.html reports/gosec-iast.json
 
 ZAP_PORT=8090
 
-if ! pgrep -f "zap.sh -daemon"; then
+if ! pgrep -f "zap.sh -daemon" > /dev/null; then
     echo "Starting ZAP DAST..."
     zap.sh -daemon -port $ZAP_PORT -config api.disablekey=true &
     sleep 15
@@ -57,7 +67,7 @@ sleep 10
 zap-cli --zap-url http://localhost:$ZAP_PORT report -o reports/zap-report.html -f html
 
 echo "Running Gosec IAST..."
-gosec -fmt json -out reports/gosec-iast.json ./
+gosec -fmt json -out reports/gosec-iast.json ./ || { echo "Gosec scan failed."; exit 1; }
 
 if [ ! -s "reports/zap-report.html" ]; then
     echo "<html><body><h1>No vulnerabilities found</h1></body></html>" > reports/zap-report.html
@@ -67,16 +77,15 @@ if [ ! -s "reports/gosec-iast.json" ]; then
     echo '{ "status": "No vulnerabilities found" }' > reports/gosec-iast.json
 fi
 
-if [ $? -ne 0 ]; then
-    echo "IAST scan failed."
-    exit 1
-else
-    echo "IAST scan passed successfully."
-fi
-
 echo "Stopping Node.js server..."
 if ps -p $SERVER_PID > /dev/null; then
-    kill $SERVER_PID
+    kill -15 $SERVER_PID
+    sleep 2
+    if ps -p $SERVER_PID > /dev/null; then
+        kill -9 $SERVER_PID
+    fi
 else
     echo "Warning: Server process not found. It might have already exited."
 fi
+
+echo "IAST scan completed successfully."
