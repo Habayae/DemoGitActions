@@ -2,27 +2,25 @@
 
 set -e  
 
-echo "Checking if Node.js server is running..."
 PORT=8080
+ZAP_PORT=8090
+ZAP_HOME="/home/runner/.ZAP"
+
+echo "Checking if Node.js server from DAST is running..."
 if ! curl -s http://localhost:$PORT > /dev/null; then
-    echo "Error: Server is not running on port $PORT!"
+    echo "Error: Server is not running on port $PORT! Ensure DAST started it."
     exit 1
 fi
 
 mkdir -p reports/
 touch reports/zap-report.html reports/gosec-iast.json
 
-ZAP_PORT=8090
-ZAP_HOME="/home/runner/.ZAP"
-
-echo "Checking if ZAP is already running..."
+echo "Checking if ZAP DAST is already running..."
 if pgrep -f "zap.sh -daemon" > /dev/null; then
-    echo "ZAP is already running."
+    echo "ZAP is already running from DAST."
 else
-    echo "ZAP is not running. Cleaning up and starting ZAP..."
-    rm -rf "$ZAP_HOME/lock"
-    zap.sh -daemon -port $ZAP_PORT -config api.disablekey=true &
-    sleep 15
+    echo "Error: ZAP is not running! Ensure DAST started it."
+    exit 1
 fi
 
 echo "Checking if ZAP is responding..."
