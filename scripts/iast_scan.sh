@@ -13,16 +13,21 @@ mkdir -p reports/
 touch reports/zap-report.html reports/gosec-iast.json
 
 ZAP_PORT=8090
+ZAP_HOME="/home/runner/.ZAP"
 
-if ! pgrep -f "zap.sh -daemon" > /dev/null; then
-    echo "Starting ZAP DAST..."
+echo "Checking if ZAP is already running..."
+if pgrep -f "zap.sh -daemon" > /dev/null; then
+    echo "ZAP is already running."
+else
+    echo "ZAP is not running. Cleaning up and starting ZAP..."
+    rm -rf "$ZAP_HOME/lock"
     zap.sh -daemon -port $ZAP_PORT -config api.disablekey=true &
     sleep 15
 fi
 
-echo "Checking if ZAP is running..."
+echo "Checking if ZAP is responding..."
 if ! curl -s http://localhost:$ZAP_PORT > /dev/null; then
-    echo "Error: ZAP is not running or not responding on port $ZAP_PORT!"
+    echo "Error: ZAP is not responding on port $ZAP_PORT!"
     exit 1
 fi
 
