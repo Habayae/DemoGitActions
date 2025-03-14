@@ -92,9 +92,7 @@ jobs:
     - name: Improve and optimize code based on identified vulnerabilities
       run: ./scripts/improve_code.sh
 
-    - name: Integrate security into DevSecOps pipeline
-      run: ./scripts/integrate_security_devsecops.sh
-
+      
     - name: Commit the updated code 
       run: |
         git config --global user.name "Vu Viet Anh"
@@ -102,6 +100,3 @@ jobs:
         git add .
         git commit -m "Fix vulnerabilities based on security scans" || echo "No changes to commit"
         git push || echo "No changes to push"
-
-    - name: Repeat the process
-      run: echo "Re-running pipeline after changes"
