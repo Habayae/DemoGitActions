@@ -7,7 +7,13 @@ if ! npm list express-session >/dev/null 2>&1; then
     npm install express-session
 fi
 
-killall -q zap.sh
+PORT=8080
+EXISTING_PID=$(lsof -ti :$PORT)
+if [ ! -z "$EXISTING_PID" ]; then
+    echo "Port $PORT is in use. Killing process $EXISTING_PID..."
+    kill -9 $EXISTING_PID
+    sleep 2
+fi
 
 node server.js &
 SERVER_PID=$!
@@ -25,12 +31,12 @@ touch reports/zap-report.html reports/gosec-iast.json
 
 if ! pgrep -f "zap.sh -daemon"; then
     echo "Starting ZAP DAST..."
-    zap.sh -daemon -port 8080 -config api.disablekey=true &
+    zap.sh -daemon -port $PORT -config api.disablekey=true &
     sleep 10
 fi
 
 echo "Running IAST scan..."
-zap-cli quick-scan http://localhost:3000
+zap-cli quick-scan http://localhost:$PORT
 sleep 10
 zap-cli report -o reports/zap-report.html -f html
 
