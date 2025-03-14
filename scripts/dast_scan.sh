@@ -49,8 +49,3 @@ else
     echo "DAST scan passed successfully."
 fi
 
-if ps -p $SERVER_PID > /dev/null; then
-    kill $SERVER_PID
-else
-    echo "Warning: Server process not found. It might have already exited."
-fi
