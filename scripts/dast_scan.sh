@@ -42,7 +42,7 @@ if [ "$run_zap" = true ]; then
     echo "Running ZAP DAST scan..."
     zap.sh -daemon -port 8080 -config api.disablekey=true &
     sleep 10
-    zap-cli quick-scan http://localhost:3000
+    zap-cli quick-scan http://localhost:8080
     zap-cli report -o reports/zap-report.html -f html
 fi
 
