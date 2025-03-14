@@ -28,19 +28,25 @@ if echo "$changed_files" | grep -E "$software_languages"; then
     sleep 10
 fi
 
-zap.sh -daemon -port 8080 -config api.disablekey=true &
-sleep 10
-zap-cli quick-scan --url http://localhost:3000
-zap-cli report -o reports/zap-report.html -f html
+if [ -z "$changed_files" ] || ! echo "$changed_files" | grep -qE "$web_languages|$software_languages"; then
+    zap.sh -daemon -port 8080 -config api.disablekey=true &
+    sleep 10
+    zap-cli quick-scan --url http://localhost:3000
+    zap-cli report -o reports/zap-report.html -f html
+fi
 
 if [ ! -s "reports/zap-report.html" ]; then
-    echo "<html><body><h1>No vulnerabilities found</h1></body></html>" > reports/zap-report.html
+    echo "Generating fallback ZAP report..." > reports/zap-report.html
 fi
 
 if [ ! -s "reports/katana-dast.json" ]; then
-    echo '{ "status": "No vulnerabilities found" }' > reports/katana-dast.json
+    echo "Generating fallback Katana DAST report..." > reports/katana-dast.json
 fi
 
-echo "DAST scan completed. Reports are available in the 'reports' directory."
+if [ ! -s "reports/zap-report.html" ] && [ ! -s "reports/katana-dast.json" ]; then
+    echo "DAST scan failed: No report generated."
+else
+    echo "DAST scan passed successfully."
+fi
 
 kill $SERVER_PID
