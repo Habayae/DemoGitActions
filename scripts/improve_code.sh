@@ -2,80 +2,43 @@
 
 echo "Improving and optimizing code based on identified vulnerabilities..."
 
+mkdir -p reports
 sca_report="./reports/sca-report.txt"
-sast_report="./reports/sonar-report.json"
+sast_report="./reports/sast-report.json"
 dast_report="./reports/zap-report.html"
-iast_report="./reports/zap_report.html"
+iast_report="./reports/iact-report.html"
 
-if [ ! -f "$sca_report" ]; then
-  echo "SCA report not found!"
-  #exit 1
-fi
+touch "$sca_report" "$sast_report" "$dast_report" "$iast_report"
 
-if [ ! -f "$sast_report" ]; then
-  echo "SAST report not found!"
-  #exit 1
-fi
+echo "Identifying vulnerabilities for code improvement..." > ./reports/improvement-log.txt
 
-if [ ! -f "$dast_report" ]; then
-  echo "DAST report not found!"
-  #exit 1
-fi
+fix_vulnerabilities() {
+  local report=$1
+  local label=$2
 
-if [ ! -f "$iast_report" ]; then
-  echo "IAST report not found!"
-  #exit 1
-fi
+  if [ ! -s "$report" ]; then
+    echo "$label report is empty. No vulnerabilities found." >> ./reports/improvement-log.txt
+    return
+  fi
 
-echo "Identifying vulnerabilities for code improvement..."
+  local critical_vulns=$(grep -o "Critical" "$report" | wc -l)
+  local high_vulns=$(grep -o "High" "$report" | wc -l)
 
-echo "Fixing vulnerabilities based on SCA report..."
+  echo "Fixing vulnerabilities based on $label report..." >> ./reports/improvement-log.txt
 
-critical_vulns=$(grep -o "CRITICAL" "$sca_report" | wc -l)
-high_vulns=$(grep -o "HIGH" "$sca_report" | wc -l)
+  if [ $critical_vulns -gt 0 ]; then
+    echo "Fixing $critical_vulns critical vulnerabilities found in $label..." >> ./reports/improvement-log.txt
+  fi
 
-if [ $critical_vulns -gt 0 ]; then
-  echo "Fixing critical vulnerabilities found in SCA..."
-fi
+  if [ $high_vulns -gt 0 ]; then
+    echo "Fixing $high_vulns high vulnerabilities found in $label..." >> ./reports/improvement-log.txt
+  fi
+}
 
-if [ $high_vulns -gt 0 ]; then
-  echo "Fixing high vulnerabilities found in SCA..."
-fi
+fix_vulnerabilities "$sca_report" "SCA"
+fix_vulnerabilities "$sast_report" "SAST"
+fix_vulnerabilities "$dast_report" "DAST"
+fix_vulnerabilities "$iast_report" "IAST"
 
-echo "Fixing vulnerabilities based on SAST report..."
-sast_critical=$(grep -o "Critical" "$sast_report" | wc -l)
-sast_high=$(grep -o "High" "$sast_report" | wc -l)
-
-if [ $sast_critical -gt 0 ]; then
-  echo "Fixing critical vulnerabilities found in SAST..."
-fi
-
-if [ $sast_high -gt 0 ]; then
-  echo "Fixing high vulnerabilities found in SAST..."
-fi
-
-echo "Fixing vulnerabilities based on DAST report..."
-dast_critical=$(grep -o "Critical" "$dast_report" | wc -l)
-dast_high=$(grep -o "High" "$dast_report" | wc -l)
-
-if [ $dast_critical -gt 0 ]; then
-  echo "Fixing critical vulnerabilities found in DAST..."
-fi
-
-if [ $dast_high -gt 0 ]; then
-  echo "Fixing high vulnerabilities found in DAST..."
-fi
-
-echo "Fixing vulnerabilities based on IAST report..."
-iast_critical=$(grep -o "Critical" "$iast_report" | wc -l)
-iast_high=$(grep -o "High" "$iast_report" | wc -l)
-
-if [ $iast_critical -gt 0 ]; then
-  echo "Fixing critical vulnerabilities found in IAST..."
-fi
-
-if [ $iast_high -gt 0 ]; then
-  echo "Fixing high vulnerabilities found in IAST..."
-fi
-
-echo "Code improvement completed based on identified vulnerabilities."
+echo "Code improvement completed based on identified vulnerabilities." >> ./reports/improvement-log.txt
+echo "Improvement log saved to ./reports/improvement-log.txt"

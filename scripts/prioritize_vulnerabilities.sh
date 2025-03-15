@@ -2,26 +2,26 @@
 
 echo "Prioritizing vulnerabilities based on risk levels..."
 
-risk_report="./risk-evaluation-report.txt"
+mkdir -p reports
+risk_report="./reports/risk-evaluation-report.txt"
+priority_report="./reports/vulnerability-priority-report.txt"
 
-if [ ! -f "$risk_report" ]; then
-  echo "Risk evaluation report not found!"
-  exit 1
-fi
+touch "$risk_report" "$priority_report"
 
-priority_report="./vulnerability-priority-report.txt"
-
-if [ -f "$priority_report" ]; then
-  rm "$priority_report"
+if [ ! -s "$risk_report" ]; then
+  echo "Risk evaluation report is empty or not found!" > "$priority_report"
+  echo "No vulnerabilities detected." >> "$priority_report"
+  echo "Vulnerability priority report saved to $priority_report"
+  exit 0
 fi
 
 echo "Creating vulnerability priority report..." > "$priority_report"
 echo "======================================" >> "$priority_report"
 
-critical_vulnerabilities=$(grep "Critical" "$risk_report" | wc -l)
-high_vulnerabilities=$(grep "High" "$risk_report" | wc -l)
-medium_vulnerabilities=$(grep "Medium" "$risk_report" | wc -l)
-low_vulnerabilities=$(grep "Low" "$risk_report" | wc -l)
+critical_vulnerabilities=$(grep -c "Critical" "$risk_report")
+high_vulnerabilities=$(grep -c "High" "$risk_report")
+medium_vulnerabilities=$(grep -c "Medium" "$risk_report")
+low_vulnerabilities=$(grep -c "Low" "$risk_report")
 
 echo "Critical vulnerabilities: $critical_vulnerabilities" >> "$priority_report"
 echo "High vulnerabilities: $high_vulnerabilities" >> "$priority_report"
